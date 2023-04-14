@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.myapplication.recycler.CustomAdapter
 import com.example.myapplication.recycler.ItemsViewModel
+import com.google.android.material.tabs.TabLayout
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,12 +21,17 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class DetailActivity : AppCompatActivity() {
+
+    var weatherObject:WeatherResponse? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
         val weather = intent.getSerializableExtra("weather") as WeatherRequest
         getCurrentData(weather)
+
+        toggleTempType()
     }
 
     private fun getCurrentData(weather:WeatherRequest) {
@@ -39,7 +45,8 @@ class DetailActivity : AppCompatActivity() {
             override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>) {
                 if (response.code() == 200) {
                     val weatherResponse = response.body()
-                    weatherResponse?.let { updateView(it) }
+                    weatherObject = weatherResponse
+                    weatherResponse?.let { updateView(it, TempType.CELCIUS) }
                 }
             }
 
@@ -50,7 +57,7 @@ class DetailActivity : AppCompatActivity() {
         })
     }
 
-    private fun updateView(weatherResponse:WeatherResponse){
+    private fun updateView(weatherResponse:WeatherResponse, tempType: TempType){
         var imageUrl = ""
         if (weatherResponse.weather.isNotEmpty()){
             imageUrl = "https://openweathermap.org/img/wn/${weatherResponse.weather[0].icon}@2x.png"
@@ -65,13 +72,15 @@ class DetailActivity : AppCompatActivity() {
             .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 
         val tempTextView: TextView = findViewById(R.id.temp)
-        tempTextView.text = "${weatherResponse.main?.temp.toString()} ${"\u2103"}"
+        val temp = if (tempType == TempType.CELCIUS) "${weatherResponse.main?.temp.toString()} ${"\u2103"}" else "${weatherResponse.main?.temp.toString()} ${"\u2109"}"
+        tempTextView.text = temp
 
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerview)
         recyclerview.layoutManager = LinearLayoutManager(this)
-        val data = buildItemListFromWeather(weatherResponse)
+        val data = buildItemListFromWeather(weatherResponse, tempType)
         val adapter = CustomAdapter(data)
         recyclerview.adapter = adapter
+        recyclerview.adapter?.notifyDataSetChanged()
     }
 
     private fun showError(){
@@ -84,10 +93,19 @@ class DetailActivity : AppCompatActivity() {
         alertDialog.show()
     }
 
-    private fun buildItemListFromWeather(weatherResponse:WeatherResponse) : List<ItemsViewModel>{
+    private fun buildItemListFromWeather(weatherResponse:WeatherResponse, tempType: TempType) : List<ItemsViewModel>{
         val data = ArrayList<ItemsViewModel>()
-        data.add(ItemsViewModel("Min Temperature", weatherResponse.main?.temp_min.toString()))
-        data.add(ItemsViewModel("Max Temperature", weatherResponse.main?.temp_min.toString()))
+        val mintemp: String
+        val maxtemp: String
+        if (tempType == TempType.FAHRENEHEIT){
+            mintemp = weatherResponse.main?.temp_min?.toFaherenheit().toString()
+            maxtemp =  weatherResponse.main?.temp_max?.toFaherenheit().toString()
+        }else{
+            mintemp = weatherResponse.main?.temp_min?.toCelcius().toString()
+            maxtemp =  weatherResponse.main?.temp_max?.toCelcius().toString()
+        }
+        data.add(ItemsViewModel("Min Temperature", mintemp))
+        data.add(ItemsViewModel("Max Temperature", maxtemp))
         data.add(ItemsViewModel("Cloud Coverage", weatherResponse.clouds?.all.toString()))
         data.add(ItemsViewModel("Latitude", weatherResponse.clouds?.all.toString()))
         data.add(ItemsViewModel("Latitude", weatherResponse.clouds?.all.toString()))
@@ -97,8 +115,39 @@ class DetailActivity : AppCompatActivity() {
         return data
     }
 
+    private fun toggleTempType() {
+        val tabLayout: TabLayout =
+            findViewById(R.id.weatherToggleTab); // get the reference of TabLayout
+        tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                if (tab != null) {
+                    if (tab.position == 0) weatherObject?.let { updateView(it, TempType.CELCIUS) } else  weatherObject?.let { updateView(it, TempType.FAHRENEHEIT) }
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+    }
+
     companion object {
         var BaseUrl = "https://api.openweathermap.org/data/2.5/"
         var AppId = "5429b6a8bee19bb06bb4ef54409fe206"
     }
 }
+
+enum class TempType{
+ CELCIUS, FAHRENEHEIT
+}
+
+fun Float.toFaherenheit():String{
+    return "$this ${"\u2109"}"
+}
+
+fun Float.toCelcius():String{
+    val cel = (this + 32)
+    return "$cel ${"\u2103"}"
+}
+
+
+

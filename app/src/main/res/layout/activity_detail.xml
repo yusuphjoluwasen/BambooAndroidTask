@@ -72,6 +72,32 @@
         tools:itemCount="5"
         tools:listitem="@layout/weather_item_design" />
 
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/weatherToggleTab"
+        android:layout_width="124dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/city"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tabBackground="@drawable/tab_selector"
+        app:tabGravity="center"
+        app:tabIndicatorColor="@color/teal_700"
+        app:tabIndicatorHeight="2dp"
+        app:tabMode="scrollable">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="62dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="1dp"
+            android:text="C" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="62dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="1dp"
+            android:text="F" />
+
+    </com.google.android.material.tabs.TabLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
