@@ -72,7 +72,7 @@ class DetailActivity : AppCompatActivity() {
             .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 
         val tempTextView: TextView = findViewById(R.id.temp)
-        val temp = if (tempType == TempType.CELCIUS) "${weatherResponse.main?.temp.toString()} ${"\u2103"}" else "${weatherResponse.main?.temp.toString()} ${"\u2109"}"
+        val temp = if (tempType == TempType.CELCIUS) weatherResponse.main?.temp?.toCelcius().toString() else weatherResponse.main?.temp?.toFaherenheit().toString()
         tempTextView.text = temp
 
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerview)
@@ -80,7 +80,6 @@ class DetailActivity : AppCompatActivity() {
         val data = buildItemListFromWeather(weatherResponse, tempType)
         val adapter = CustomAdapter(data)
         recyclerview.adapter = adapter
-        recyclerview.adapter?.notifyDataSetChanged()
     }
 
     private fun showError(){
