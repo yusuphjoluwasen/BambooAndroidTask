@@ -9,4 +9,16 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="search_a_location">SEARCH A LOCATION</string>
+    <string name="search_a_city">SEARCH A CITY</string>
+    <string name="city_name">City name</string>
+    <string name="longitude">Longitude</string>
+    <string name="search">SEARCH</string>
+    <string name="toronto">Toronto</string>
+    <string name="berlin">Berlin</string>
+    <string name="delhi">Delhi</string>
+    <string name="choose_a_city">CHOOSE A CITY</string>
+    <string name="welcome">Welcome</string>
+    <string name="details">DETAILS</string>
 </resources>
