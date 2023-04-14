@@ -36,11 +36,11 @@ class DetailActivity : AppCompatActivity() {
 
     private fun getCurrentData(weather:WeatherRequest) {
         val retrofit = Retrofit.Builder()
-            .baseUrl(BaseUrl)
+            .baseUrl(AppUtil.BaseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val service = retrofit.create(WeatherService::class.java)
-        val call = service.getCurrentWeatherData(weather.city, weather.lat, weather.lon, AppId)
+        val call = service.getCurrentWeatherData(weather.city, weather.lat, weather.lon, AppUtil.AppId)
         call.enqueue(object : Callback<WeatherResponse> {
             override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>) {
                 if (response.code() == 200) {
@@ -117,7 +117,7 @@ class DetailActivity : AppCompatActivity() {
     private fun toggleTempType() {
         val tabLayout: TabLayout =
             findViewById(R.id.weatherToggleTab); // get the reference of TabLayout
-        tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 if (tab != null) {
                     if (tab.position == 0) weatherObject?.let { updateView(it, TempType.CELCIUS) } else  weatherObject?.let { updateView(it, TempType.FAHRENEHEIT) }
@@ -127,11 +127,6 @@ class DetailActivity : AppCompatActivity() {
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
-    }
-
-    companion object {
-        var BaseUrl = "https://api.openweathermap.org/data/2.5/"
-        var AppId = "5429b6a8bee19bb06bb4ef54409fe206"
     }
 }
 
