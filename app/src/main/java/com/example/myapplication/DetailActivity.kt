@@ -17,6 +17,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -109,8 +110,10 @@ class DetailActivity : AppCompatActivity() {
         data.add(ItemsViewModel("Latitude", weatherResponse.clouds?.all.toString()))
         data.add(ItemsViewModel("Latitude", weatherResponse.clouds?.all.toString()))
         data.add(ItemsViewModel("Longitude", weatherResponse.clouds?.all.toString()))
-        data.add(ItemsViewModel("Sunrise", weatherResponse.sys?.sunrise.toString()))
-        data.add(ItemsViewModel("Sunset", weatherResponse.sys?.sunset.toString()))
+        val sunrise = SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(Date((weatherResponse.sys?.sunrise ?: 0) * 1000))
+        val sunset = SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(Date((weatherResponse.sys?.sunset ?: 0) * 1000))
+        data.add(ItemsViewModel("Sunrise", sunrise))
+        data.add(ItemsViewModel("Sunset", sunset))
         return data
     }
 
