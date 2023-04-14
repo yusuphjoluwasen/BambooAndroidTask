@@ -74,7 +74,7 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/weatherToggleTab"
-        android:layout_width="124dp"
+        android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/city"
@@ -98,6 +98,5 @@
             android:text="F" />
 
     </com.google.android.material.tabs.TabLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
