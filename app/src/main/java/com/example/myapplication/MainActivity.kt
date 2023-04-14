@@ -2,6 +2,7 @@ package com.example.myapplication
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
@@ -42,9 +43,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun getDataFromTextFields(){
         val lat:EditText = findViewById(R.id.editTextLatitude)
-        val long:EditText = findViewById(R.id.editTextLatitude)
-        val city:EditText = findViewById(R.id.editTextLatitude)
-        val weather = WeatherRequest(city.text?.toString() ?: "", lat.text?.toString() ?: "", long.text?.toString() ?: "")
+        val long:EditText = findViewById(R.id.editTextLongitude)
+        val city:EditText = findViewById(R.id.cityNameField)
+        val weather = WeatherRequest(city.text?.toString() ?: "", lat.text.toString() ?: "", long.text?.toString() ?: "")
         moveToNextPage(weather)
     }
 

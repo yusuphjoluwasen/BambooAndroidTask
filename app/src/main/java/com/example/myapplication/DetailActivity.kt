@@ -1,7 +1,6 @@
 package com.example.myapplication
 
 import android.app.AlertDialog
-import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
@@ -20,18 +19,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 import kotlin.collections.ArrayList
 
-
 class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
         val weather = intent.getSerializableExtra("weather") as WeatherRequest
-
-        AsyncTask.execute {
-            getCurrentData(weather)
-        }
-
+        getCurrentData(weather)
     }
 
     private fun getCurrentData(weather:WeatherRequest) {
@@ -57,10 +51,12 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun updateView(weatherResponse:WeatherResponse){
-       val imageUrl = "https://openweathermap.org/img/wn/${weatherResponse.weather[0].icon}@2x.png"
+        var imageUrl = ""
+        if (weatherResponse.weather.isNotEmpty()){
+            imageUrl = "https://openweathermap.org/img/wn/${weatherResponse.weather[0].icon}@2x.png"
+        }
         val weatherImage:ImageView = findViewById(R.id.weatherImage);
         Glide.with(this).load(imageUrl)
-            .placeholder(R.drawable.ic_launcher_background)
             .error(R.drawable.ic_launcher_background)
             .into(weatherImage);
 
@@ -88,25 +84,6 @@ class DetailActivity : AppCompatActivity() {
         alertDialog.show()
     }
 
-    companion object {
-        var BaseUrl = "https://api.openweathermap.org/data/2.5/"
-        var AppId = "5429b6a8bee19bb06bb4ef54409fe206"
-    }
-
-//    fun toggleTempType(){
-//        val segment = findViewById<SegmentedButton>(R.id.segmented)
-//        segment.initialCheckedIndex = 0
-//
-//        // init with segments programmatically without RadioButton as a child in xml
-//        segment.initWithItems {
-//            // takes only list of strings
-//            listOf("Today", "This week")
-//        }
-//        segment.onSegmentChecked { segment ->
-//            Log.d("creageek:segmented", "Segment ${segment.text} checked")
-//        }
-//    }
-
     private fun buildItemListFromWeather(weatherResponse:WeatherResponse) : List<ItemsViewModel>{
         val data = ArrayList<ItemsViewModel>()
         data.add(ItemsViewModel("Min Temperature", weatherResponse.main?.temp_min.toString()))
@@ -118,5 +95,10 @@ class DetailActivity : AppCompatActivity() {
         data.add(ItemsViewModel("Sunrise", weatherResponse.sys?.sunrise.toString()))
         data.add(ItemsViewModel("Sunset", weatherResponse.sys?.sunset.toString()))
         return data
+    }
+
+    companion object {
+        var BaseUrl = "https://api.openweathermap.org/data/2.5/"
+        var AppId = "5429b6a8bee19bb06bb4ef54409fe206"
     }
 }
