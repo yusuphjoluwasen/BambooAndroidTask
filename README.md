@@ -3,3 +3,4 @@ TECHNOLOGIES
 - Kotlin
 - Retrofit
 - Constraint Layout
+- Recycler View
